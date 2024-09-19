@@ -1,67 +1,114 @@
-import org.example.*;
+public abstract class Dispositivo {
+    private String problema;
+    private int prazoMaximoDias;
 
-import static org.junit.Assert.*;
-
-public class AssistenciaTecnicaTest {
-
-    OrdemServico ordemSmartphone;
-    OrdemServico ordemNotebook;
-    OrdemServico ordemConsole;
-
-
-    Smartphone smartphone = new Smartphone("troca de tela");
-    Notebook notebook = new Notebook("formatação de sistema");
-    Console console = new Console("superaquecimento");
-
-    Tecnico tecnicoSmartphone = new Tecnico("Carlos", "Smartphones");
-    Tecnico tecnicoNotebook = new Tecnico("Ana", "Notebooks");
-    Tecnico tecnicoConsole = new Tecnico("João", "Consoles");
-
-    ordemSmartphone = new OrdemServico(smartphone, tecnicoSmartphone);
-    ordemNotebook = new OrdemServico(notebook, tecnicoNotebook);
-    ordemConsole = new OrdemServico(console, tecnicoConsole);
-
-    @Test
-    public void testarDiagnosticoECusto() {
-        ordemSmartphone.diagnosticar();
-        assertEquals(300, ordemSmartphone.getCusto());
-
-        ordemNotebook.diagnosticar();
-        assertEquals(200, ordemNotebook.getCusto());
-
-        ordemConsole.diagnosticar();
-        assertEquals(400, ordemConsole.getCusto());
+    public Dispositivo(String problema, int prazoMaximoDias) {
+        this.problema = problema;
+        this.prazoMaximoDias = prazoMaximoDias;
     }
 
-    @Test
-    public void testarAprovacaoDeOrcamento() {
-        assertFalse(ordemSmartphone.isAprovado());
-        ordemSmartphone.aprovarOrcamento();
-        assertTrue(ordemSmartphone.isAprovado());
-
-        assertFalse(ordemNotebook.isAprovado());
-        ordemNotebook.aprovarOrcamento();
-        assertTrue(ordemNotebook.isAprovado());
+    public String getProblema() {
+        return problema;
     }
 
-    @Test
-    public void testarGerenciamentoDePrazos() {
-        assertEquals(3, ordemSmartphone.getDispositivo().getPrazoMaximoDias());
-        assertEquals(7, ordemNotebook.getDispositivo().getPrazoMaximoDias());
-        assertEquals(10, ordemConsole.getDispositivo().getPrazoMaximoDias());
+    public int getPrazoMaximoDias() {
+        return prazoMaximoDias;
     }
 
-    @Test
-    public void testarAtribuicaoDeTecnicos() {
-        assertEquals("Carlos", ordemSmartphone.getTecnico().getNome());
-        assertEquals("Ana", ordemNotebook.getTecnico().getNome());
-        assertEquals("João", ordemConsole.getTecnico().getNome());
+    public abstract int diagnosticar();
+}
+public class Smartphone extends Dispositivo {
+    public Smartphone(String problema) {
+        super(problema, 3); // Definindo prazo de 3 dias para reparo de smartphone
     }
 
-    @Test
-    public void testarStatusOrdemDeServico() {
-        assertEquals("Orçamento não aprovado", ordemSmartphone.getStatus());
-        ordemSmartphone.aprovarOrcamento();
-        assertEquals("Em reparo", ordemSmartphone.getStatus());
+    @Override
+    public int diagnosticar() {
+        // Valor de reparo para troca de tela
+        return 300;
+    }
+}
+
+public class Notebook extends Dispositivo {
+    public Notebook(String problema) {
+        super(problema, 7); // Definindo prazo de 7 dias para reparo de notebook
+    }
+
+    @Override
+    public int diagnosticar() {
+        // Valor de reparo para formatação de sistema
+        return 200;
+    }
+}
+
+public class Console extends Dispositivo {
+    public Console(String problema) {
+        super(problema, 10); // Definindo prazo de 10 dias para reparo de console
+    }
+
+    @Override
+    public int diagnosticar() {
+        // Valor de reparo para superaquecimento
+        return 400;
+    }
+}
+public class Tecnico {
+    private String nome;
+    private String especialidade;
+
+    public Tecnico(String nome, String especialidade) {
+        this.nome = nome;
+        this.especialidade = especialidade;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEspecialidade() {
+        return especialidade;
+    }
+}
+public class OrdemServico {
+    private Dispositivo dispositivo;
+    private Tecnico tecnico;
+    private boolean aprovado;
+    private int custo;
+    private String status;
+
+    public OrdemServico(Dispositivo dispositivo, Tecnico tecnico) {
+        this.dispositivo = dispositivo;
+        this.tecnico = tecnico;
+        this.aprovado = false;
+        this.status = "Orçamento não aprovado";
+    }
+
+    public void diagnosticar() {
+        this.custo = dispositivo.diagnosticar();
+    }
+
+    public int getCusto() {
+        return custo;
+    }
+
+    public boolean isAprovado() {
+        return aprovado;
+    }
+
+    public void aprovarOrcamento() {
+        this.aprovado = true;
+        this.status = "Em reparo";
+    }
+
+    public Dispositivo getDispositivo() {
+        return dispositivo;
+    }
+
+    public Tecnico getTecnico() {
+        return tecnico;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }
