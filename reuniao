@@ -1,0 +1,53 @@
+public class Workshop {
+    private String nome;
+    private String data;
+    private int limiteParticipantes = 30;
+    private int participantesInscritos = 0;
+
+    public Workshop(String nome, String data) {
+        this.nome = nome;
+        this.data = data;
+    }
+
+    public boolean inscreverParticipante(String nomeParticipante) {
+        if (participantesInscritos < limiteParticipantes) {
+            participantesInscritos++;
+            return true;
+        }
+        return false;
+    }
+}
+public class Reuniao {
+    private String nome;
+    private String data;
+    private boolean privada;
+    private String senha;
+
+    public Reuniao(String nome, String data, boolean privada, String senha) {
+        this.nome = nome;
+        this.data = data;
+        this.privada = privada;
+        this.senha = senha;
+    }
+
+    public boolean isPrivada() {
+        return privada;
+    }
+
+    public boolean acessarReuniao(String senhaFornecida) {
+        if (!privada) {
+            return true; // Reuniões públicas podem ser acessadas sem senha
+        }
+        return this.senha != null && this.senha.equals(senhaFornecida); // Senha deve ser correta para reuniões privadas
+    }
+}
+public class EventoCorporativo extends Reuniao {
+    private String sala;
+    private String refeitorio;
+
+    public EventoCorporativo(String nome, String data, String sala, String refeitorio) {
+        super(nome, data, true, null); // Evento Corporativo é sempre privado
+        this.sala = sala;
+        this.refeitorio = refeitorio;
+    }
+}
